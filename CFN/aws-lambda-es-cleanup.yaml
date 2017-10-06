@@ -3,7 +3,7 @@ AWSTemplateFormatVersion: '2010-09-09'
 Description: Build Lambada functin that will delete indices that with the following format cwl-2017.08.28 older than number of days specified
 Parameters:
   Domain:
-    Default: integration-2017
+    Default: none
     Description: Elasticsearch domain
     Type: String
   DeleteAfter:
@@ -15,11 +15,11 @@ Parameters:
     Description: Index/indices to process comma separated, with all every index will be processed except .kibana
     Type: String
   EsEndpoint:
-    Default: search-integration-2017-myj5lunrg6iak6wjvkfp5xgvwa.us-east-1.es.amazonaws.com
+    Default: none
     Description: Name of Elasticsearch instance
     Type: String
   CodeBucketName:
-    Default: lambdacodebucketfores
+    Default: none
     Description: S3 Bucket where the Lambda code has been uploaded.
     Type: String
 Resources:
