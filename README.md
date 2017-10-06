@@ -3,6 +3,9 @@
 ## Overview
 This AWS Lambda function allows you to delete the old Elasticsearch indexes using SigV4Auth authentication. You configure the AWS Elasticsearch Access Policy authorizing the Lambda Role or the AWS Account number instead of using the IP address whitelist.
 
+## CFN
+Subsequent instructions refer to the original repository and are kept here for reference. There is a CFN that should be used and not the manual steps that follow. The CFN requires the name of the Elasticsearch instance, the domain and the number of days to retain. 
+
 ## Getting Started
 ### How To install
 
