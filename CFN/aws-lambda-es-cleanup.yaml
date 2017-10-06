@@ -1,9 +1,9 @@
 ---
 AWSTemplateFormatVersion: '2010-09-09'
-Description: Cron Job Lambda Function
+Description: Build Lambada functin that will delete indices that with the following format cwl-2017.08.28 older than number of days specified
 Parameters:
   Domain:
-    Default: erick-poc
+    Default: integration-2017
     Description: Elasticsearch domain
     Type: String
   DeleteAfter:
