@@ -2,20 +2,24 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Description: Cron Job Lambda Function
 Parameters:
+  Domain:
+    Default: erick-poc
+    Description: Elasticsearch domain
+    Type: String
   DeleteAfter:
-    Default: 7
+    Default: 7    
     Description: Number of days to preserve
-    Type: Number
+    Type: String
   Index:
     Default: cwl
     Description: Index/indices to process comma separated, with all every index will be processed except .kibana
-    Type: CommaDelimitedList
+    Type: String
   EsEndpoint:
-    Default: 
+    Default: search-integration-2017-myj5lunrg6iak6wjvkfp5xgvwa.us-east-1.es.amazonaws.com
     Description: Name of Elasticsearch instance
     Type: String
   CodeBucketName:
-    Default: aws-lambda-es-cleanup
+    Default: lambdacodebucketfores
     Description: S3 Bucket where the Lambda code has been uploaded.
     Type: String
 Resources:
@@ -39,18 +43,16 @@ Resources:
         PolicyDocument:
           Statement:
           - Effect: Allow
-            Action:
-            - logs:*
+            Action: ["logs:*"]
             Resource: "arn:aws:logs:*:*:*"
       - PolicyName: ESPermission
-        PolicyDocument: ESPermission
+        PolicyDocument: 
           Statement:
           - Effect: Allow
-            Action:
-            - es.*
+            Action: ["es:*"]
             Resource:
               - 'Fn::Sub': >-
-                 arn:aws:es:${AWS::Region}:${AWS::AccountId}:domain/${EsEndpoint}/*
+                 arn:aws:es:${AWS::Region}:${AWS::AccountId}:domain/${Domain}/*
   LambdaFunction:
     Type: "AWS::Lambda::Function"
     Properties:
@@ -64,35 +66,11 @@ Resources:
           index: !Ref Index
           delete_after: !Ref DeleteAfter
       FunctionName: es-cleanup-lambda
-      Handler: index.handler
+      Handler: es-cleanup.lambda_handler
       MemorySize: 128
       Role: !GetAtt LambdaServiceRole.Arn
       Runtime: "python2.7"
       Timeout: 60
-  ScheduledRule: 
-    Type: "AWS::Events::Rule"
-    Properties: 
-      Description: "ScheduledRule"
-      ScheduleExpression: "rate(1 days)"
-      State: "ENABLED"
-      Targets: 
-        - 
-          Arn: 
-            Fn::GetAtt: 
-              - "LambdaFunction"
-              - "Arn"
-          Id: "TargetFunctionV1"
-  PermissionForEventsToInvokeLambda: 
-    Type: "AWS::Lambda::Permission"
-    Properties: 
-      FunctionName: 
-        Ref: "LambdaFunction"
-      Action: "lambda:InvokeFunction"
-      Principal: "events.amazonaws.com"
-      SourceArn: 
-        Fn::GetAtt: 
-          - "ScheduledRule"
-          - "Arn"
 Outputs:
   myStacksRegion:
     Value:  !Ref AWS::Region

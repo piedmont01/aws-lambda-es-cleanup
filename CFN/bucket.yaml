@@ -1,0 +1,31 @@
+---
+Resources:
+  LambdaCodeBucketForES:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: lambdacodebucketfores
+  S3Role:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+        - Effect: Allow
+          Principal:
+            Service: [s3.amazonaws.com]
+          Action: ['sts:AssumeRole']
+  S3ECSBucketAccessPolicy:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyName: ElasticsearchLambdaBucketPolicy
+      Roles: !Ref S3Role
+      PolicyDocument:
+        Statement:
+        - Effect: Allow
+          Action: ['s3:ListAllMyBuckets', 's3:GetBucketLocation']
+          Resource: ["*"]
+        - Effect: Allow
+          Action: ['s3:ListBucket']
+          Resource: [!Ref LambdaCodeBucketForES]
+        - Effect: Allow
+          Action: ['s3:GetObject','s3:PutObject','s3:DeleteObject']
+          Resource: [!Ref 'LambdaCodeBucketForES']
